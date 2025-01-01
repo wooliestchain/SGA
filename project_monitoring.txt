@@ -1,0 +1,54 @@
+project_monitoring/
+├── src/
+│   ├── main.rs
+│   ├── lib.rs
+│   ├── models/
+│   │   ├── mod.rs
+│   │   ├── projet.rs
+│   │   ├── utilisateur.rs
+│   │   ├── assignation.rs
+│   │   ├── commentaire.rs
+│   │   ├── document.rs
+│   │   ├── evenement.rs
+│   │   ├── tache.rs
+│   │   ├── budget_detaille.rs
+│   │   ├── rapport.rs
+│   │   ├── notification.rs
+│   │   ├── partie_prenante.rs
+│   │   ├── log_activite.rs
+│   │   ├── evenement_systeme.rs
+│   │   ├── audit.rs
+│   │   ├── performance.rs
+│   │   ├── rapport_suivi.rs
+│   ├── api/
+│   │   ├── mod.rs
+│   │   ├── projets.rs
+│   │   ├── utilisateurs.rs
+│   │   ├── assignations.rs
+│   │   ├── commentaires.rs
+│   │   ├── documents.rs
+│   │   ├── evenements.rs
+│   │   ├── taches.rs
+│   │   ├── budgets_detailles.rs
+│   │   ├── rapports.rs
+│   │   ├── notifications.rs
+│   │   ├── parties_prenantes.rs
+│   │   ├── logs_activites.rs
+│   │   ├── evenements_systeme.rs
+│   │   ├── audits.rs
+│   │   ├── performances.rs
+│   │   ├── rapports_suivi.rs
+│   ├── db/
+│   │   ├── mod.rs
+│   │   ├── connection.rs
+│   │   ├── schema.rs
+│   ├── routes/
+│   │   ├── mod.rs
+│   │   ├── routes.rs
+│   ├── services/
+│   │   ├── mod.rs
+│   │   ├── service.rs
+│   ├── utils/
+│   │   ├── mod.rs
+│   │   ├── utils.rs
+├── Cargo.toml
