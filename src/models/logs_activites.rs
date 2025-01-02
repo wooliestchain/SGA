@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
-super::utilisateur::Utilisateurs;
+use super::utilisateur;
 
 #[derive(Debug, Serialize,Deserialize)]
 pub struct logs_activities{

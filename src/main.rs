@@ -1,8 +1,12 @@
+use axum::{Router, routing::get};
 use postgres::{Client, NoTls, Error};
 mod models;
 use models::projet::Projet;
 
-fn main() -> Result<(), Error> {
+mod api;
+use api::utilisateur;
+
+/* fn main() -> Result<(), Error> {
 
     let mut projet1 = Projet {
         id: 1,
@@ -56,4 +60,17 @@ fn main() -> Result<(), Error> {
     }
 
     Ok(())
+}
+ */
+
+#[tokio::main]
+async fn main(){
+    let app = Router::new().route("/", get(|| async{"Hello,"}));
+
+    let listener =tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+ }
+
+ async fn hello() -> &'static str{
+    "Hello, world!"
 }

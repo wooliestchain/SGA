@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use super::projet;
 
 #[derive(Debug, Serialize,Deserialize)]
 pub struct utilisateurs{

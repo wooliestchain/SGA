@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use super::utilisateur;
 
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Projet{
     pub id: i32,
