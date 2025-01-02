@@ -1,0 +1,1 @@
+https://rust-api.dev/docs/part-1/hello-world/
