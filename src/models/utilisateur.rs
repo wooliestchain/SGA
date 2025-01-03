@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use super::projet;
 
 #[derive(Debug, Serialize,Deserialize)]
-pub struct utilisateurs{
+pub struct Utilisateurs {
     pub id: i32,
     pub nom: String,
     pub role: String,
