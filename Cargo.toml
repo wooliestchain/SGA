@@ -11,4 +11,4 @@ serde = {version = "1.0", features = ["derive"]}
 chrono = { version = "0.4", features = ["serde"] }
 axum = "0.7.4"
 tokio =  { version = "1.35.1", features = ["full", "macros", "rt-multi-thread"] }
-actix_web= "4.9.0"
+actix-web= "4.0"
