@@ -1,47 +1,59 @@
 use crate::models::utilisateur::Utilisateurs;
-use postgres::{Client, NoTls, Error};
+use axum::http::response;
+use postgres::{row, Client, NoTls};
 use actix_web::{web, HttpResponse, Responder};
-use serde::Deserialize;
-use chrono::{DateTime, Utc};
+use chrono::{Utc};
 
 
+pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder{
+    let mut user = form.into_inner();
 
+    // Si la date_creation est None, la remplacer par la date actuelle
+    if user.date_creation.is_none() {
+        user.date_creation = Some(Utc::now());
+    }
 
-pub async fn add_user(form: web::Json<Utilisateurs>,) -> impl Responder{
-    let user = form.into_inner();
+    // Convertir DateTime<Utc> en NaiveDateTime (qui est compatible avec TIMESTAMP PostgreSQL)
+    let date_creation_naive = user.date_creation.unwrap().naive_utc();
 
-    //connexion a la base de données
-    let mut client = match Client::connect(
-        "host=localhost user=postgres password=root dbname=projet_sga", NoTls
-    ){
-        Ok(client) => client,
-        Err(err) => {
-            eprintln!("Erreur de connexion à la base deonnées: {:?}", err);
-            return HttpResponse::InternalServerError().body("Erreur de connexion à la base de données");
+    // Convertir NaiveDateTime en chaîne de caractères qui peut être acceptée par PostgreSQL
+    let date_creation_str = date_creation_naive.to_string();
+
+    //créer un tahce asynchrone pour la connexoion à la base de données
+    let result = tokio::task::spawn_blocking(move ||{
+        //connexion à la base de données
+        let mut client = match Client::connect("host=localhost user=postgres password=root dbname=projet_sga", NoTls) {
+            Ok(client) => client,
+            Err(err) => {
+                eprintln!("Erreur de connexion à la base de données {:?}", err);
+                return Err("Erreur de connexion à la base de données");
+            }
+        };
+
+        let now = Utc::now();
+        let naive_now = now.naive_utc();
+
+        let query = r#"
+        INSERT INTO utilisateurs (nom, role, email, date_creation) VALUES ($1, $2, $3, $4) RETURNING id;
+        "#;
+
+        match client.query_one(
+            query, &[&user.nom, &user.role, &user.email, &date_creation_str],
+        ){
+            Ok(row) => {
+                let id: i32 = row.get("id");
+                Ok(format!("Utilisateur ajouté avec l'ID: {}", id))
+            }
+            Err(err) => {
+                eprintln!("Erreur lors de l'ajout de l'utilisateur : {:?}", err);
+                Err("Erreur lors de l'ajout de l'utilisateur")
+            }
         }
-    };
+    }).await;
 
-    //Insérer l'utilsateur
-    let query = r#"
-    INSERT INTO utilisateurs (nom, role, email, date_creation) VALUES ($1, $2, $3, $4) RETURNING id
-    "#;
-
-    match client.query_one(
-        query,
-        &[
-            &user.nom,
-            &user.role,
-            &user.email,
-            &utc::now(),
-        ],
-    ){
-        Ok(row) => {
-            let id: i32 = row.get("id");
-            HttpResponse::Ok().json(format!("Utilisateur ajouté avec l'ID: {}", id))
-        }
-        Err(err) => {
-            eprintln!("Erreur lors de l'ajout de l'utilisateur: {:?}", err);
-            HttpResponse::InternalServerError().body("Erreur lors de l'ajout de l'utilisateur")
-        }
+    match result{
+        Ok(Ok(response)) => HttpResponse::Ok().json(response),
+        Ok(Err(err)) => HttpResponse::InternalServerError().body(err),
+        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur"),
     }
 }
