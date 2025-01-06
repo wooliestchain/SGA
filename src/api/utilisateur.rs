@@ -3,6 +3,7 @@ use axum::http::response;
 use postgres::{row, Client, NoTls};
 use actix_web::{web, HttpResponse, Responder};
 use chrono::{Utc};
+use super::dbconnect::database_connexion;
 
 
 pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder{
@@ -22,13 +23,12 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
     //créer un tahce asynchrone pour la connexoion à la base de données
     let result = tokio::task::spawn_blocking(move ||{
         //connexion à la base de données
-        let mut client = match Client::connect("host=localhost user=postgres password=root dbname=projet_sga", NoTls) {
-            Ok(client) => client,
-            Err(err) => {
-                eprintln!("Erreur de connexion à la base de données {:?}", err);
-                return Err("Erreur de connexion à la base de données");
-            }
-        };
+        let mut client = database_connexion().map_err(|err| {
+            eprintln!("Erreur de connexion à la base de données : {:?}", err);
+            "Erreur de connexion à la base de données"
+        })?;
+
+
 
         let now = Utc::now();
         let naive_now = now.naive_utc();
