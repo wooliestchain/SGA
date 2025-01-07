@@ -1,4 +1,4 @@
-use crate::models::utilisateur::Utilisateurs;
+use crate::models::utilisateur::{self, Utilisateurs};
 use axum::http::response;
 use postgres::{row, Client, NoTls};
 use actix_web::{web, HttpResponse, Responder};
@@ -57,3 +57,52 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
         Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur"),
     }
 }
+
+
+
+pub async fn obtenir_utilisateur(id: web::Path<i32>) -> Result<HttpResponse, Error> {
+    let user_id = id.into_inner();
+
+    // Créer une tâche asynchrone pour interagir avec la base de données
+    let result = task::spawn_blocking(move || {
+        // Connexion à la base de données
+        let client = database_connexion().map_err(|err| {
+            eprintln!("Erreur de connexion à la base de données : {:?}", err);
+            HttpResponse::InternalServerError().body("Erreur de connexion à la base de données").into()
+        })?;
+
+        // Requête pour récupérer un utilisateur par ID
+        let query = r#"
+        SELECT id, nom, role, email, date_creation 
+        FROM utilisateurs 
+        WHERE id = $1;
+        "#;
+
+        client.query_one(query, &[&user_id]).map(|row| {
+            // Mapper les données de l'utilisateur dans un struct Utilisateurs
+            Utilisateurs {
+                id: Some(row.get("id")),
+                nom: row.get("nom"),
+                role: row.get("role"),
+                email: row.get("email"),
+                date_creation: Some(row.get("date_creation")),
+            }
+        }).map_err(|err| {
+            eprintln!("Erreur lors de la récupération de l'utilisateur : {:?}", err);
+            HttpResponse::NotFound().body("Utilisateur non trouvé").into()
+        })
+    })
+    .await;
+
+    // Gestion du résultat
+    match result {
+        Ok(Ok(utilisateur)) => Ok(HttpResponse::Ok().json(utilisateur)),
+        Ok(Err(err_response)) => Err(err_response),
+        Err(err) => {
+            eprintln!("Erreur lors de l'exécution de la tâche : {:?}", err);
+            Err(HttpResponse::InternalServerError().body("Erreur interne du serveur").into())
+        }
+    }
+}
+
+
