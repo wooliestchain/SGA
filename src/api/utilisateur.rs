@@ -1,7 +1,9 @@
 use crate::models::utilisateur::{self, Utilisateurs};
 use axum::http::response;
 use postgres::{row, Client, NoTls};
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder, Error};
+use actix_web::error::ErrorInternalServerError;
+
 use chrono::{Utc};
 use super::dbconnect::database_connexion;
 
@@ -9,17 +11,17 @@ use super::dbconnect::database_connexion;
 pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder{
     let mut user = form.into_inner();
 
-    // Si la date_creation est None, la remplacer par la date actuelle
+    /* // Si la date_creation est None, la remplacer par la date actuelle
     if user.date_creation.is_none() {
         user.date_creation = Some(Utc::now());
     }
 
     // Convertir DateTime<Utc> en NaiveDateTime (qui est compatible avec TIMESTAMP PostgreSQL)
-    let date_creation_naive = user.date_creation.unwrap().naive_utc();
+    let date_creation_naive = user.date_creation.unwrap().naive_utc(); */
 
     // Convertir NaiveDateTime en chaîne de caractères qui peut être acceptée par PostgreSQL
-    let date_creation_str = date_creation_naive.to_string();
-
+/*     let date_creation_str = date_creation_naive.to_string();
+ */
     //créer un tahce asynchrone pour la connexoion à la base de données
     let result = tokio::task::spawn_blocking(move ||{
         //connexion à la base de données
@@ -38,7 +40,7 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
         "#;
 
         match client.query_one(
-            query, &[&user.nom, &user.role, &user.email, &date_creation_str],
+            query, &[&user.nom, &user.role, &user.email, &user.date_creation],
         ){
             Ok(row) => {
                 let id: i32 = row.get("id");
@@ -60,15 +62,17 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
 
 
 
-pub async fn obtenir_utilisateur(id: web::Path<i32>) -> Result<HttpResponse, Error> {
+
+
+pub async fn obtenir_utilisateur(id: web::Path<i32>) -> impl Responder {
     let user_id = id.into_inner();
 
     // Créer une tâche asynchrone pour interagir avec la base de données
-    let result = task::spawn_blocking(move || {
+    let result = tokio::task::spawn_blocking(move || {
         // Connexion à la base de données
         let client = database_connexion().map_err(|err| {
             eprintln!("Erreur de connexion à la base de données : {:?}", err);
-            HttpResponse::InternalServerError().body("Erreur de connexion à la base de données").into()
+            ErrorInternalServerError("Erreur de connexion à la base de données")
         })?;
 
         // Requête pour récupérer un utilisateur par ID
@@ -89,7 +93,7 @@ pub async fn obtenir_utilisateur(id: web::Path<i32>) -> Result<HttpResponse, Err
             }
         }).map_err(|err| {
             eprintln!("Erreur lors de la récupération de l'utilisateur : {:?}", err);
-            HttpResponse::NotFound().body("Utilisateur non trouvé").into()
+            ErrorInternalServerError("Utilisateur non trouvé")
         })
     })
     .await;
