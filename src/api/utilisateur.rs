@@ -11,10 +11,10 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
     let mut user = form.into_inner();
 
     // Assurez-vous que la date de création est définie
-    if user.date_creation.is_none() {
+    /* if user.date_creation.is_none() {
         user.date_creation = Some(Utc::now().naive_utc());
     }
-
+ */
     let result = tokio::task::spawn_blocking(move || {
         // Connexion à la base de données
         let mut client = database_connexion().map_err(|err| {
@@ -51,44 +51,15 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
     }
 }
 
-/// Fonction pour récupérer un utilisateur par ID
-pub async fn obtenir_utilisateur(id: web::Path<i32>) -> impl Responder {
+
+
+pub async fn obtenir_utilisateur(id: web::Path<i32>) -> impl Responder{
     let user_id = id.into_inner();
 
     let result = tokio::task::spawn_blocking(move || {
-        // Connexion à la base de données
-        let mut client = database_connexion().map_err(|err| {
-            eprintln!("Erreur de connexion à la base de données : {:?}", err);
-            ErrorInternalServerError("Erreur de connexion à la base de données")
-        })?;
-
-        let query = r#"
-        SELECT id, nom, role, email, date_creation 
-        FROM utilisateurs 
-        WHERE id = $1;
-        "#;
-
-        client.query_one(query, &[&user_id]).map(|row| {
-            Utilisateurs {
-                id: Some(row.get("id")),
-                nom: row.get("nom"),
-                role: row.get("role"),
-                email: row.get("email"),
-                date_creation: Some(row.get("date_creation")),
-            }
-        }).map_err(|err| {
-            eprintln!("Erreur lors de la récupération de l'utilisateur : {:?}", err);
-            ErrorInternalServerError("Utilisateur non trouvé")
+        let mut client = database_connexion().map_err(|err|{
+            eprintln!("Erreur de connexion à la base de données: {:?}")
         })
     })
-    .await;
 
-    match result {
-        Ok(Ok(utilisateur)) => HttpResponse::Ok().json(utilisateur),
-        Ok(Err(err_response)) => HttpResponse::InternalServerError().body(err_response.to_string()),
-        Err(err) => {
-            eprintln!("Erreur lors de l'exécution de la tâche : {:?}", err);
-            HttpResponse::InternalServerError().body("Erreur interne du serveur")
-        }
-    }
 }
