@@ -12,7 +12,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default()) // Ajout de la journalisation des requêtes
             .route("/ajouter_utilisateur", web::post().to(api::utilisateur::ajouter_utilisateur))
-            .route("/obtenir_utilisateur/{id}", web::get().to(api::utilisateur::obtenir_utilisateur))
+            .route("/obtenir_utilisateur/{id}", web::get().to(api::utilisateur::recuperer_utilisateur))
     })
     .bind("127.0.0.1:8000")? // Bind le serveur à l'adresse et au port spécifiés
     .run() // Lancer le serveur Actix
