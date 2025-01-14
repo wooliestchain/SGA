@@ -3,7 +3,7 @@ use super::utilisateur;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Projet{
-    pub id: i32,
+    pub id: Option<i32>,
     pub nom: String,
     pub description: String,
     pub ministere_responsable: String,

@@ -1,0 +1,88 @@
+-- Table principale Projet
+CREATE TABLE Projet (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    description TEXT,
+    ministere_responsable VARCHAR(255),
+    referant_projet VARCHAR(255),
+    referant_presidence VARCHAR(255),
+    annee_debut INT,
+    annee_fin INT,
+    type_projet VARCHAR(255),
+    personnelles_alloues VARCHAR(255),
+    source_financement VARCHAR(255),
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    statut VARCHAR(50),
+    priorite VARCHAR(50),
+    objectifs TEXT,
+    impact_attendu TEXT
+);
+
+-- Table Categorie
+CREATE TABLE Categorie (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Table de liaison ProjetCategorie
+CREATE TABLE ProjetCategorie (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    categorie_id INT REFERENCES Categorie(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, categorie_id)
+);
+
+-- Table Ville
+CREATE TABLE Ville (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Table de liaison ProjetVille
+CREATE TABLE ProjetVille (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    ville_id INT REFERENCES Ville(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, ville_id)
+);
+
+-- Table InfrastructureMobilisee
+CREATE TABLE InfrastructureMobilisee (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL UNIQUE,
+    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table de liaison ProjetInfrastructure
+CREATE TABLE ProjetInfrastructure (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    infrastructure_id INT REFERENCES InfrastructureMobilisee(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, infrastructure_id)
+);
+
+-- Table FondsDecaisse
+CREATE TABLE FondsDecaisse (
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    montant NUMERIC(15, 2) NOT NULL,
+    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table Risque
+CREATE TABLE Risque (
+    id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL
+);
+
+-- Table de liaison ProjetRisque
+CREATE TABLE ProjetRisque (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    risque_id INT REFERENCES Risque(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, risque_id)
+);
+
+-- Table Commentaire
+CREATE TABLE Commentaire (
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    contenu TEXT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
