@@ -20,6 +20,7 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
             "Erreur de connexion à la base de données"
         })?;
 
+        //Modifier Projet pour y ajouter code, établir des inter médiations pour d'autres colonnes
         let query = r#"
         INSERT INTO Projet(nom, description, ministere_responsable, referant_projet, referant_presidence, annee_debut, annee_fin, type_projet, source_financement,statut, priorite, objectifs, impact_attendu)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
