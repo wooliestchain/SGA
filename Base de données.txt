@@ -18,6 +18,16 @@ CREATE TABLE Projet (
     impact_attendu TEXT
 );
 
+--Table User
+CREATE TABLE User(
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255),
+    prenom VARCHAR(255),
+    email (255) NOT NULL UNIQUE,
+)
+
+
+
 -- Table Categorie
 CREATE TABLE Categorie (
     id SERIAL PRIMARY KEY,
