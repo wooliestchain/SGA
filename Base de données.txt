@@ -23,7 +23,15 @@ CREATE TABLE User(
     id SERIAL PRIMARY KEY,
     nom VARCHAR(255),
     prenom VARCHAR(255),
-    email (255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    mdp VARCHAR(255)
+)
+
+--TABLE Role
+CREATE TABLE Role(
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR (255) NOT NULL UNIQUE,
+    code VARCHAR(255)
 )
 
 
