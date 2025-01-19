@@ -34,6 +34,13 @@ CREATE TABLE Role(
     code VARCHAR(255)
 )
 
+-- Table de liaison RoleUser
+CREATE TABLE RoleUser (
+    user_id INT REFERENCES User(id) ON DELETE CASCADE,
+    role_id INT REFERENCES Role(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
 
 
 -- Table Categorie
