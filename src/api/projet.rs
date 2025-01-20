@@ -1,6 +1,6 @@
 use crate::models::projet::{self, Projet};
 use axum::http::response;
-use postgres::{Client, NoTls};
+use postgres::{row, Client, NoTls};
 use actix_web::{web, HttpResponse, Responder, Error};
 use actix_web::error::ErrorInternalServerError;
 use chrono::Utc;
@@ -45,5 +45,59 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
         Ok(Ok(response)) =>HttpResponse::Ok().json(response),
         Ok(Err(err))=> HttpResponse::InternalServerError().body(err),
         Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur")
+    }
+}
+
+pub async fn recuperer_projet(code: web::Path<String>) -> impl Responder{
+    let code = code.into_inner();
+
+    let result = tokio::task::spawn_blocking(move || {
+
+        let mut client = database_connexion().map_err(|err|{
+            eprintln!("Erreur de connexion à labase de données: {:?}", err)
+            "Erreur de connexion à la base de données"
+        })?;
+
+        let query = r#"
+        SELECT nom, code, description, ministere_responsable, referant_projet, referant_presidence, annee_debut, annee_fin, type_projet, source_financement, date_creation, statut, priorite, objectifs, impact_attendu
+        FROM Projet
+        WHERE code = $1;
+        "#;
+
+        match client.query_one(query, &[&code]){
+            Ok(row) => {
+                let projet = Projet{
+                    id: row.get("id"),
+                    nom: row.get("nom"),
+                    code: row.get("code"),
+                    description: row.get("description"),
+                    ministere_responsable: row.get("ministere_responsable"),
+                    referant_projet: row.get("referant_projet"),
+                    referant_presidence: row.get("referant_presidence"),
+                    annee_debut: row.get("annee_debut"),
+                    annee_fin: row.get("annee_fin"),
+                    type_projet: row.get("type_projet"),
+                    source_financement: row.get("source_financement"),
+                    date_creation : row.get::<_, Option<String>>("date_creation"),
+                    statut: row.get("statut"),
+                    priorite: row.get("priorite"),
+                    objectifs: row.get("objectifs"),
+                    impact_attendu: row.get("impact_attendu")
+                };
+                Ok(projet)
+            }
+            Err(err) =>{
+                eprintln!("Erreur lors de la récupération du projet : {:?}", err)
+                Err("Projet non trouvé")
+            }
+        }
+    })
+    .await;
+
+    match result {
+        Ok(Ok(projet)) => HttpResponse::Ok().json(projet),
+        Ok(Err(err)) => HttpResponse::NotFound().json(json!({"erreur": err})),
+        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur"),
+
     }
 }
