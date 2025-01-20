@@ -10,3 +10,13 @@ pub struct Utilisateurs {
     pub email: String,
     pub date_creation: Option <String>,
 }
+
+pub struct Role{
+    pub id: i32,
+    pub nom: String
+}
+
+pub struct UserRole{
+    pub user_id: i32,
+    pub role_id: i32
+}
