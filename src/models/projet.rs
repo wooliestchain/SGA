@@ -5,6 +5,7 @@ use super::utilisateur;
 pub struct Projet{
     pub id: Option<i32>,
     pub nom: String,
+    pub code: i32,
     pub description: String,
     pub ministere_responsable: String,
     pub referant_projet: String,
