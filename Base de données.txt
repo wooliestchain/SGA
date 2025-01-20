@@ -2,6 +2,7 @@
 CREATE TABLE Projet (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(255) NOT NULL,
+    code INT NOT NULL UNIQUE,
     description TEXT,
     ministere_responsable VARCHAR(255),
     referant_projet VARCHAR(255),
