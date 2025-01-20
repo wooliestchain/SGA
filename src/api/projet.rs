@@ -54,7 +54,7 @@ pub async fn recuperer_projet(code: web::Path<String>) -> impl Responder{
     let result = tokio::task::spawn_blocking(move || {
 
         let mut client = database_connexion().map_err(|err|{
-            eprintln!("Erreur de connexion à labase de données: {:?}", err)
+            eprintln!("Erreur de connexion à labase de données: {:?}", err);
             "Erreur de connexion à la base de données"
         })?;
 
@@ -87,7 +87,7 @@ pub async fn recuperer_projet(code: web::Path<String>) -> impl Responder{
                 Ok(projet)
             }
             Err(err) =>{
-                eprintln!("Erreur lors de la récupération du projet : {:?}", err)
+                eprintln!("Erreur lors de la récupération du projet : {:?}", err);
                 Err("Projet non trouvé")
             }
         }
