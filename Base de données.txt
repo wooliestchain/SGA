@@ -42,7 +42,12 @@ CREATE TABLE RoleUser (
     PRIMARY KEY (user_id, role_id)
 );
 
-
+--Table Commentaire
+CREATE TABLE Commentaire{
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR (255),
+    message TEXT
+}
 
 -- Table Categorie
 CREATE TABLE Categorie (
