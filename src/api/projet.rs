@@ -48,7 +48,7 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
     }
 }
 
-pub async fn recuperer_projet(code: web::Path<String>) -> impl Responder{
+pub async fn recuperer_projet(code: web::Path<i32>) -> impl Responder{
     let code = code.into_inner();
 
     let result = tokio::task::spawn_blocking(move || {
@@ -100,4 +100,16 @@ pub async fn recuperer_projet(code: web::Path<String>) -> impl Responder{
         Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur"),
 
     }
+}
+
+//Fonction pour supprimer un projet
+pub async fn supprimer_projet(code: web::Path<i32>) -> impl Responder{
+    let code = code.into_inner();
+
+    let result = tokio::task::spawn_blocking(move|| {
+
+        let mut client = database_connexion().map_err(|err|{
+            eprintln!("Erreur de connexion à la base de données")
+        })
+    })
 }
