@@ -48,7 +48,7 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
     }
 }
 
-pub async fn recuperer_projet(code: web::Path<i32>) -> impl Responder{
+pub async fn recuperer_projet (code: web::Path<i32>) -> impl Responder{
     let code = code.into_inner();
 
     let result = tokio::task::spawn_blocking(move || {
