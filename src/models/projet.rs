@@ -20,38 +20,46 @@ pub struct Projet{
     pub objectifs: String,
     pub impact_attendu: String,
 }
-
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Categorie{
     pub id: Option<i32>,
     pub nom: String,
 }
 
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProjetCategorie{
     pub projet_id: i32,
     pub categorie_id: i32,
+
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Ville{
     pub id: Option<i32>,
     pub nom: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProjetVille{
     pub projet_id: i32,
     pub ville_id: i32,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InfrastructureMobilisee{
     pub id: Option<i32>,
     pub nom: String,
     pub date_mise_a_jour: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProjetInfrastructure{
     pub projet_id: i32,
     pub infrastructure_id: i32,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct FondsDecaisse{
     pub id: Option<i32>,
     pub projet_id: i32,
@@ -59,16 +67,19 @@ pub struct FondsDecaisse{
     pub date_mise_a_jour: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Risque{
     pub id: Option<i32>,
     pub description: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProjetRisque{
     pub projet_id: i32,
     pub risque_id: i32,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Commentaire{
     pub id: Option<i32>,
     pub projet_id: i32,
