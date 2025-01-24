@@ -20,8 +20,26 @@ pub async fn categorie_add(form: web::Json<projet::Categorie>) -> impl Responder
         })?;
 
         let query = r#"
-        INSERT INTO Categorie
-        "#
+        INSERT INTO Categorie(nom) VALUES ($1) RETURNING id;
+        "#;
+
+        match client.query_one(query, &[&categorie.nom]){
+            Ok(row)=> {
+                let id: i32 = row.get("id");
+                Ok(format!("Categorie ajouté avec l'ID: {}", id))
+            }
+            Err(err)=>{
+                eprintln!("Erreur lors de l'ajout du projet {:?}", err);
+                Err("Erreur lors de l'ajout de la categorie")
+            }
+        }
     })
+    .await;
+
+    match result{
+        Ok(Ok(response)) => HttpResponse::Ok().json(response),
+        Ok(Err(err)) => HttpResponse::InternalServerError().body(err),
+        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur")
+    }
 
 }
