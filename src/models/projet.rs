@@ -44,7 +44,7 @@ pub struct ProjetVille{
 pub struct InfrastructureMobilisee{
     pub id: Option<i32>,
     pub nom: String,
-    pub date_mise_a_jour: String,
+    pub date_mise_a_jour: Option<String>,
 }
 
 pub struct ProjetInfrastructure{

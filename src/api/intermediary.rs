@@ -1,4 +1,4 @@
-use crate::models::projet::{self, Categorie};
+use crate::models::projet::{self, Categorie, InfrastructureMobilisee};
 use axum::http::response;
 use postgres::{row, Client, NoTls};
 use actix_web::{web, HttpResponse, Responder, Error};
@@ -75,3 +75,36 @@ pub async fn ville_add (form : web::Json<projet::Ville>) -> impl Responder{
         Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur")
     }
 }
+
+pub async fn infra_add (form : web::Json<projet::InfrastructureMobilisee>) -> impl Responder{
+    let infrastructuremobilisee = form.into_inner();
+    let result = tokio::task::spawn_blocking(move ||{
+
+        let mut client  = database_connexion().map_err(|err|{
+            eprintln!("Erreur de connexion à la base de données {:?}", err);
+            "Erreur de connexion à la base de données"
+        })?;
+
+        let query = r#"
+        INSERT INTO infrastructuremobilisee(nom) VALUES ($1) RETURNING id;
+        "#;
+        match client.query_one(query, &[&infrastructuremobilisee.nom]){
+            Ok(row) => {
+                let id: i32 = row.get("id");
+                Ok(format!("Infrastructures ajoutée avec l'ID: {}", id))
+            }
+            Err(err) => {
+                eprintln!("Erreur lors de l'ajout de l'infrastructure {:?}", err);
+                Err("Erreur lors de l'ajout de l'infrastructure")
+            }
+        }
+    })
+    .await;
+
+    match result{
+        Ok(Ok(response)) => HttpResponse::Ok().json(response),
+        Ok(Err(err)) => HttpResponse::InternalServerError().body(err),
+        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur")
+    }
+}
+
