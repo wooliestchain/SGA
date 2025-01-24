@@ -22,7 +22,7 @@ pub struct Projet{
 }
 
 pub struct Categorie{
-    pub id: i32,
+    pub id: Option<i32>,
     pub nom: String,
 }
 
@@ -32,7 +32,7 @@ pub struct ProjetCategorie{
 }
 
 pub struct Ville{
-    pub id: i32,
+    pub id: Option<i32>,
     pub nom: String,
 }
 
@@ -42,7 +42,7 @@ pub struct ProjetVille{
 }
 
 pub struct InfrastructureMobilisee{
-    pub id: i32,
+    pub id: Option<i32>,
     pub nom: String,
     pub date_mise_a_jour: String,
 }
@@ -53,14 +53,14 @@ pub struct ProjetInfrastructure{
 }
 
 pub struct FondsDecaisse{
-    pub id: i32,
+    pub id: Option<i32>,
     pub projet_id: i32,
     pub montant: f64,
     pub date_mise_a_jour: String,
 }
 
 pub struct Risque{
-    pub id: i32,
+    pub id: Option<i32>,
     pub description: String,
 }
 
@@ -70,7 +70,7 @@ pub struct ProjetRisque{
 }
 
 pub struct Commentaire{
-    pub id: i32,
+    pub id: Option<i32>,
     pub projet_id: i32,
     pub contenu: String,
     pub date_creation: String,
