@@ -49,6 +49,7 @@ CREATE TABLE Ministere(
 --Table Source de financement
 CREATE TABLE source_financement(
     id SERIAL PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255),
     code INT NOT NULL UNIQUE
 )
@@ -81,6 +82,7 @@ CREATE TABLE RoleUser (
 -- Table Categorie
 CREATE TABLE Categorie (
     id SERIAL PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255) NOT NULL UNIQUE
 );
 
@@ -88,6 +90,7 @@ CREATE TABLE Categorie (
 -- Table Ville
 CREATE TABLE Ville (
     id SERIAL PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255) NOT NULL UNIQUE
 );
 
@@ -95,6 +98,7 @@ CREATE TABLE Ville (
 -- Table InfrastructureMobilisee
 CREATE TABLE InfrastructureMobilisee (
     id SERIAL PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255) NOT NULL UNIQUE,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -111,6 +115,7 @@ CREATE TABLE FondsDecaisse (
 -- Table Risque
 CREATE TABLE Risque (
     id SERIAL PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
 
