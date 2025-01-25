@@ -9,9 +9,6 @@ CREATE TABLE Projet (
     type_projet VARCHAR(255),
     personnelles_alloues VARCHAR(255),
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    statut VARCHAR(50),
-    priorite VARCHAR(50),
-    objectifs TEXT,
     impact_attendu TEXT
 );
 
@@ -23,6 +20,23 @@ CREATE TABLE Statut (
     statut_actuel VARCHAR(100) NOT NULL,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--Table objectifs
+CREATE TABLE Objectifs (
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    description TEXT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--Table priorite
+CREATE TABLE Priorite (
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    description TEXT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 --Table Ministère
 CREATE TABLE Ministere(
