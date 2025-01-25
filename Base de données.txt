@@ -53,11 +53,6 @@ CREATE TABLE source_financement(
     code INT NOT NULL UNIQUE
 )
 
--Table de liaison FinacementProjet
-CREATE TABLE FinacementProjet(
-    financement_id INT REFERENCES source_financement(id) ON DELETE CASCADE,
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
-)
 
 --Table User
 CREATE TABLE User(
@@ -82,12 +77,6 @@ CREATE TABLE RoleUser (
     PRIMARY KEY (user_id, role_id)
 );
 
---Table Commentaire
-CREATE TABLE Commentaire{
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR (255),
-    message TEXT
-}
 
 -- Table Categorie
 CREATE TABLE Categorie (
@@ -95,12 +84,6 @@ CREATE TABLE Categorie (
     nom VARCHAR(255) NOT NULL UNIQUE
 );
 
--- Table de liaison ProjetCategorie
-CREATE TABLE ProjetCategorie (
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    categorie_id INT REFERENCES Categorie(id) ON DELETE CASCADE,
-    PRIMARY KEY (projet_id, categorie_id)
-);
 
 -- Table Ville
 CREATE TABLE Ville (
@@ -108,12 +91,6 @@ CREATE TABLE Ville (
     nom VARCHAR(255) NOT NULL UNIQUE
 );
 
--- Table de liaison ProjetVille
-CREATE TABLE ProjetVille (
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    ville_id INT REFERENCES Ville(id) ON DELETE CASCADE,
-    PRIMARY KEY (projet_id, ville_id)
-);
 
 -- Table InfrastructureMobilisee
 CREATE TABLE InfrastructureMobilisee (
@@ -122,12 +99,6 @@ CREATE TABLE InfrastructureMobilisee (
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table de liaison ProjetInfrastructure
-CREATE TABLE ProjetInfrastructure (
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    infrastructure_id INT REFERENCES InfrastructureMobilisee(id) ON DELETE CASCADE,
-    PRIMARY KEY (projet_id, infrastructure_id)
-);
 
 -- Table FondsDecaisse
 CREATE TABLE FondsDecaisse (
@@ -143,12 +114,6 @@ CREATE TABLE Risque (
     description TEXT NOT NULL
 );
 
--- Table de liaison ProjetRisque
-CREATE TABLE ProjetRisque (
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    risque_id INT REFERENCES Risque(id) ON DELETE CASCADE,
-    PRIMARY KEY (projet_id, risque_id)
-);
 
 -- Table Commentaire
 CREATE TABLE Commentaire (

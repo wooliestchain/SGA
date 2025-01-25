@@ -1,0 +1,34 @@
+-Table de liaison FinacementProjet
+CREATE TABLE FinacementProjet(
+    financement_id INT REFERENCES source_financement(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
+)
+
+
+-- Table de liaison ProjetCategorie
+CREATE TABLE ProjetCategorie (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    categorie_id INT REFERENCES Categorie(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, categorie_id)
+);
+
+-- Table de liaison ProjetVille
+CREATE TABLE ProjetVille (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    ville_id INT REFERENCES Ville(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, ville_id)
+);
+
+-- Table de liaison ProjetInfrastructure
+CREATE TABLE ProjetInfrastructure (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    infrastructure_id INT REFERENCES InfrastructureMobilisee(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, infrastructure_id)
+);
+
+-- Table de liaison ProjetRisque
+CREATE TABLE ProjetRisque (
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    risque_id INT REFERENCES Risque(id) ON DELETE CASCADE,
+    PRIMARY KEY (projet_id, risque_id)
+);
