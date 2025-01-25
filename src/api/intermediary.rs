@@ -44,7 +44,7 @@ pub async fn categorie_add(form: web::Json<projet::Categorie>) -> impl Responder
 
 }
 
-pub async fn ville_add (form : web::Json<projet::Ville>) -> impl Responder{
+pub async fn ville_add(form : web::Json<projet::Ville>) -> impl Responder{
     let ville = form.into_inner();
     let result = tokio::task::spawn_blocking(move ||{
 
