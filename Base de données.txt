@@ -19,6 +19,19 @@ CREATE TABLE Projet (
     impact_attendu TEXT
 );
 
+--Table Ministère
+CREATE TABLE Ministere(
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255),
+    code INT NOT NULL UNIQUE
+)
+
+-Table de liaison MinistèreProjet
+CREATE TABLE MinistereProjet(
+    ministere_id INT REFERENCES Ministere(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
+)
+
 --Table User
 CREATE TABLE User(
     id SERIAL PRIMARY KEY,
