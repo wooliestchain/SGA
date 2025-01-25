@@ -15,17 +15,21 @@ CREATE TABLE Projet (
     impact_attendu TEXT
 );
 
+
+--Table Statut
+CREATE TABLE Statut (
+    id INT PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    statut_actuel VARCHAR(100) NOT NULL,
+    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 --Table Ministère
 CREATE TABLE Ministere(
     id SERIAL PRIMARY KEY,
-    nom VARCHAR(255),
+    proejt_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    nom VARCHAR(100) NOT NULL,
     code INT NOT NULL UNIQUE
-)
-
--Table de liaison MinistèreProjet
-CREATE TABLE MinistereProjet(
-    ministere_id INT REFERENCES Ministere(id) ON DELETE CASCADE,
-    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
 )
 
 --Table Source de financement
