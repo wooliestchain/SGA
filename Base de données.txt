@@ -4,14 +4,10 @@ CREATE TABLE Projet (
     nom VARCHAR(255) NOT NULL,
     code INT NOT NULL UNIQUE,
     description TEXT,
-    ministere_responsable VARCHAR(255),
-    referant_projet VARCHAR(255),
-    referant_presidence VARCHAR(255),
     annee_debut INT,
     annee_fin INT,
     type_projet VARCHAR(255),
     personnelles_alloues VARCHAR(255),
-    source_financement VARCHAR(255),
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     statut VARCHAR(50),
     priorite VARCHAR(50),
@@ -29,6 +25,19 @@ CREATE TABLE Ministere(
 -Table de liaison MinistèreProjet
 CREATE TABLE MinistereProjet(
     ministere_id INT REFERENCES Ministere(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
+)
+
+--Table Source de financement
+CREATE TABLE source_financement(
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(255),
+    code INT NOT NULL UNIQUE
+)
+
+-Table de liaison FinacementProjet
+CREATE TABLE FinacementProjet(
+    financement_id INT REFERENCES source_financement(id) ON DELETE CASCADE,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE
 )
 
