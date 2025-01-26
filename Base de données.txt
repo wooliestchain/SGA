@@ -6,8 +6,6 @@ CREATE TABLE Projet (
     description TEXT,
     annee_debut INT,
     annee_fin INT,
-    type_projet VARCHAR(255),
-    personnelles_alloues VARCHAR(255),
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     impact_attendu TEXT
 );
@@ -20,6 +18,15 @@ CREATE TABLE Statut (
     statut_actuel VARCHAR(100) NOT NULL,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--Table Type
+CREATE TABLE Type (
+    id INT PRIMARY KEY,
+    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    type VARCHAR(100) NOT NULL,
+    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 --Table objectifs
 CREATE TABLE Objectifs (
