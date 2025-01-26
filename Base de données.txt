@@ -61,29 +61,28 @@ CREATE TABLE source_financement(
     code INT NOT NULL UNIQUE
 )
 
-
 --Table User
-CREATE TABLE User(
+CREATE TABLE User (
     id SERIAL PRIMARY KEY,
-    nom VARCHAR(255),
-    prenom VARCHAR(255),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    mdp VARCHAR(255)
-)
-
---TABLE Role
-CREATE TABLE Role(
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR (255) NOT NULL UNIQUE,
-    code VARCHAR(255)
-)
-
--- Table de liaison RoleUser
-CREATE TABLE RoleUser (
-    user_id INT REFERENCES User(id) ON DELETE CASCADE,
-    role_id INT REFERENCES Role(id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, role_id)
+    nom VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    role VARCHAR(50) CHECK (role IN ('admin', 'referent_ministere', 'referent_presidence')) NOT NULL
 );
+
+
+-Table de liason User & Projet
+CREATE TABLE Projet_User (
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    user_id INT REFERENCES User(id) ON DELETE CASCADE,
+    role VARCHAR(50) CHECK (role IN ('referent_ministere', 'referent_presidence')) NOT NULL,
+    CONSTRAINT unique_projet_user UNIQUE (projet_id, user_id),
+    CONSTRAINT check_referent_role CHECK (
+        role IN ('referent_ministere', 'referent_presidence')
+    )
+);
+
 
 
 -- Table Categorie
