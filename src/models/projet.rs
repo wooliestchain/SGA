@@ -7,17 +7,9 @@ pub struct Projet{
     pub nom: String,
     pub code: i32,
     pub description: String,
-    pub ministere_responsable: String,
-    pub referant_projet: String,
-    pub referant_presidence: String,
     pub annee_debut: i32,
     pub annee_fin: i32,
-    pub type_projet: String,
-    pub source_financement: String,
     pub date_creation: Option<String>,
-    pub statut: String,
-    pub priorite: String,
-    pub objectifs: String,
     pub impact_attendu: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
