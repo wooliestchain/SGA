@@ -22,12 +22,12 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
 
         //Modifier Projet pour y ajouter code, établir des inter médiations pour d'autres colonnes qui vont etree séparées 
         let query = r#"
-        INSERT INTO Projet(nom, code, description, ministere_responsable, referant_projet, referant_presidence, annee_debut, annee_fin, type_projet, source_financement,statut, priorite, objectifs, impact_attendu)
+        INSERT INTO Projet(nom, code, description, annee_debut, annee_fin, impact_attendu)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
         RETURNING id;
         "#;
 
-        match client.query_one(query, &[&projet.nom, &projet.description, &projet.ministere_responsable, &projet.referant_projet, &projet.referant_presidence, &projet.annee_debut, &projet.annee_fin, &projet.type_projet, &projet.source_financement, &projet.statut, &projet.priorite, &projet.objectifs, &projet.impact_attendu],
+        match client.query_one(query, &[&projet.nom, &projet.code,&projet.description, &projet.annee_debut, &projet.annee_fin, &projet.impact_attendu],
         ){
             Ok(row) =>{
                 let id: i32 = row.get("id");
