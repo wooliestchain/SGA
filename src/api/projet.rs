@@ -23,7 +23,7 @@ pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
         //Modifier Projet pour y ajouter code, établir des inter médiations pour d'autres colonnes qui vont etree séparées 
         let query = r#"
         INSERT INTO Projet(nom, code, description, annee_debut, annee_fin, impact_attendu)
-        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+        VALUES($1,$2,$3,$4,$5,$6)
         RETURNING id;
         "#;
 
