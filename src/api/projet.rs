@@ -120,9 +120,6 @@ pub async fn supprimer_projet(code: web::Path<i32>) -> impl Responder{
                     annee_debut: row.get("annee_debut"),
                     annee_fin: row.get("annee_fin"),
                     date_creation : row.get::<_, Option<String>>("date_creation"),
-                    statut: row.get("statut"),
-                    priorite: row.get("priorite"),
-                    objectifs: row.get("objectifs"),
                     impact_attendu: row.get("impact_attendu")
                 };
                 Ok(projet)
