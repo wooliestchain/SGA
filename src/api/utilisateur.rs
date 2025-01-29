@@ -77,6 +77,7 @@ pub async fn recuperer_utilisateur(email: web::Path<String>) -> impl Responder {
                     nom: row.get("nom"),
                     role: row.get("role"),
                     email: row.get("email"),
+                    password: row.get("password"),
                     // Convertir le timestamp en chaîne (ou utiliser SystemTime)
                     date_creation: row.get::<_, Option<String>>("date_creation")
                 };
