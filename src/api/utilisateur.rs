@@ -25,7 +25,7 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
         })?;
 
         let query = r#"
-        INSERT INTO utilisateurs (nom, role, email, date_creation)
+        INSERT INTO utilisateurs (nom, role, email, password, date_creation)
         VALUES ($1, $2, $3, $4)
         RETURNING id;
         "#;
