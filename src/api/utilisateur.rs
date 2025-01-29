@@ -6,6 +6,8 @@ use actix_web::error::ErrorInternalServerError;
 use chrono::Utc;
 use super::dbconnect::database_connexion;
 use serde_json::json;
+use sha2::{Sha256, Digest};
+
 
 
 /// Fonction pour ajouter un utilisateur
