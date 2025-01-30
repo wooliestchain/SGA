@@ -13,9 +13,9 @@ use sha2::{Sha256, Digest};
 /// Fonction pour ajouter un utilisateur
 pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder {
     let mut user = form.into_inner();
-    let mut hash_password = user.hash_password;
+    let mut hash_password = user.password;
 
-    let hash_password = Sha256::new().chain_update(hash_password).chain_update("String data").finalize();
+    hash_password = Sha256::new().chain_update(hash_password).chain_update("String data").finalize();
 
     // Assurez-vous que la date de création est définie
     /* if user.date_creation.is_none() {

@@ -9,7 +9,6 @@ pub struct Utilisateurs {
     pub role: String,
     pub email: String,
     pub password: String,
-    pub hash_password: Option <String>,
     pub date_creation: Option <String>,
 }
 
