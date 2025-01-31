@@ -13,9 +13,8 @@ use sha2::{Sha256, Digest};
 /// Fonction pour ajouter un utilisateur
 pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder {
     let mut user = form.into_inner();
-    let mut hash_password = user.password;
 
-    hash_password = Sha256::new().chain_update(hash_password).chain_update("String data").finalize();
+    let hash_password= Sha256::new().chain_update(hash_password).chain_update("String data").finalize();
 
     // Assurez-vous que la date de création est définie
     /* if user.date_creation.is_none() {
@@ -37,7 +36,7 @@ pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responde
 
         match client.query_one(
             query,
-            &[&user.nom, &user.role, &user.email, &user.date_creation],
+            &[&user.nom, &user.role, &user.email= hash_password, &user.date_creation],
         ) {
             Ok(row) => {
                 let id: i32 = row.get("id");
