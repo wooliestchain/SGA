@@ -10,25 +10,23 @@ CREATE TABLE Projet (
     impact_attendu TEXT
 );
 
-
---Table Statut
+-- Table Statut (plusieurs statuts possibles pour un projet)
 CREATE TABLE Statut (
-    id INT PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     statut_actuel VARCHAR(100) NOT NULL,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Table Type
+-- Table Type (plusieurs types possibles pour un projet)
 CREATE TABLE Type (
-    id INT PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     type VARCHAR(100) NOT NULL,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
---Table objectifs
+-- Table Objectifs
 CREATE TABLE Objectifs (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -36,7 +34,7 @@ CREATE TABLE Objectifs (
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Table priorite
+-- Table Priorite
 CREATE TABLE Priorite (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -44,25 +42,24 @@ CREATE TABLE Priorite (
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
---Table Ministère
+-- Table Ministère
 CREATE TABLE Ministere(
     id SERIAL PRIMARY KEY,
-    proejt_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(100) NOT NULL,
     code INT NOT NULL UNIQUE
-)
+);
 
---Table Source de financement
-CREATE TABLE source_financement(
+-- Table Source de financement
+CREATE TABLE SourceFinancement(
     id SERIAL PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255),
     code INT NOT NULL UNIQUE
-)
+);
 
---Table User
-CREATE TABLE User (
+-- Table User
+CREATE TABLE "User" (
     id SERIAL PRIMARY KEY,
     nom VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -70,45 +67,36 @@ CREATE TABLE User (
     role VARCHAR(50) CHECK (role IN ('admin', 'referent_ministere', 'referent_presidence')) NOT NULL
 );
 
-
--Table de liason User & Projet
+-- Table de liaison User & Projet (N-N)
 CREATE TABLE Projet_User (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    user_id INT REFERENCES User(id) ON DELETE CASCADE,
+    user_id INT REFERENCES "User"(id) ON DELETE CASCADE,
     role VARCHAR(50) CHECK (role IN ('referent_ministere', 'referent_presidence')) NOT NULL,
-    CONSTRAINT unique_projet_user UNIQUE (projet_id, user_id),
-    CONSTRAINT check_referent_role CHECK (
-        role IN ('referent_ministere', 'referent_presidence')
-    )
+    CONSTRAINT unique_projet_user UNIQUE (projet_id, user_id)
 );
-
-
 
 -- Table Categorie
 CREATE TABLE Categorie (
     id SERIAL PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
-    nom VARCHAR(255) NOT NULL UNIQUE
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    nom VARCHAR(255) NOT NULL
 );
-
 
 -- Table Ville
 CREATE TABLE Ville (
     id SERIAL PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
-    nom VARCHAR(255) NOT NULL UNIQUE
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    nom VARCHAR(255) NOT NULL
 );
-
 
 -- Table InfrastructureMobilisee
 CREATE TABLE InfrastructureMobilisee (
     id SERIAL PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
-    nom VARCHAR(255) NOT NULL UNIQUE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
+    nom VARCHAR(255) NOT NULL,
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 
 -- Table FondsDecaisse
 CREATE TABLE FondsDecaisse (
@@ -121,10 +109,9 @@ CREATE TABLE FondsDecaisse (
 -- Table Risque
 CREATE TABLE Risque (
     id SERIAL PRIMARY KEY,
-    projet_id INT UNIQUE REFERENCES Projet(id) ON DELETE CASCADE,
+    projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
-
 
 -- Table Commentaire
 CREATE TABLE Commentaire (
