@@ -10,7 +10,7 @@ CREATE TABLE Projet (
     impact_attendu TEXT
 );
 
--- Table Statut (plusieurs statuts possibles pour un projet)
+-- Table Statut
 CREATE TABLE Statut (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -18,7 +18,7 @@ CREATE TABLE Statut (
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table Type (plusieurs types possibles pour un projet)
+-- Table Type
 CREATE TABLE Type (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -51,7 +51,7 @@ CREATE TABLE Ministere(
 );
 
 -- Table Source de financement
-CREATE TABLE SourceFinancement(
+CREATE TABLE Source_Financement(
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
     nom VARCHAR(255),
@@ -67,7 +67,7 @@ CREATE TABLE "User" (
     role VARCHAR(50) CHECK (role IN ('admin', 'referent_ministere', 'referent_presidence')) NOT NULL
 );
 
--- Table de liaison User & Projet (N-N)
+-- Table de liaison User & Projet (Many-to-Many)
 CREATE TABLE Projet_User (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -80,17 +80,17 @@ CREATE TABLE Projet_User (
 CREATE TABLE Categorie (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    nom VARCHAR(255) NOT NULL
+    nom VARCHAR(255) NOT NULL UNIQUE
 );
 
 -- Table Ville
 CREATE TABLE Ville (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
-    nom VARCHAR(255) NOT NULL
+    nom VARCHAR(255) NOT NULL UNIQUE
 );
 
--- Table InfrastructureMobilisee
+-- Table Infrastructure Mobilisee
 CREATE TABLE InfrastructureMobilisee (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,
@@ -98,7 +98,7 @@ CREATE TABLE InfrastructureMobilisee (
     date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table FondsDecaisse
+-- Table Fonds Decaisse
 CREATE TABLE FondsDecaisse (
     id SERIAL PRIMARY KEY,
     projet_id INT REFERENCES Projet(id) ON DELETE CASCADE,

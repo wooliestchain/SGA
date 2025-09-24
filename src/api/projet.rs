@@ -1,50 +1,93 @@
-use crate::models::projet::{self, Projet};
-use axum::http::response;
-use postgres::{row, Client, NoTls};
-use actix_web::{web, HttpResponse, Responder, Error};
-use actix_web::error::ErrorInternalServerError;
-use chrono::Utc;
-use tokio::task;
+use crate::models::projet::{Projet, ProjetInput};
+use actix_web::{web, HttpResponse, Responder};
 use super::dbconnect::database_connexion;
 use serde_json::json;
 
 
 //Fonction pour ajouter un projet 
-pub async fn ajouter_projet (form: web::Json<Projet>) -> impl Responder{
-    let mut projet = form.into_inner();
+pub async fn ajouter_projet(form: web::Json<ProjetInput>) -> impl Responder {
+    let projet_data = form.into_inner();
 
     let result = tokio::task::spawn_blocking(move || {
-
-        let mut client = database_connexion().map_err(|err|{
+        let mut client = database_connexion().map_err(|err| {
             eprintln!("Erreur de connexion à la base de données: {:?}", err);
             "Erreur de connexion à la base de données"
         })?;
 
-        //Modifier Projet pour y ajouter code, établir des inter médiations pour d'autres colonnes qui vont etree séparées 
-        let query = r#"
-        INSERT INTO Projet(nom, code, description, annee_debut, annee_fin, impact_attendu)
-        VALUES($1,$2,$3,$4,$5,$6)
-        RETURNING id;
+        // 1. Insertion dans Projet
+        let query_projet = r#"
+            INSERT INTO Projet(nom, code, description, annee_debut, annee_fin, impact_attendu)
+            VALUES($1,$2,$3,$4,$5,$6)
+            RETURNING id;
         "#;
 
-        match client.query_one(query, &[&projet.nom, &projet.code,&projet.description, &projet.annee_debut, &projet.annee_fin, &projet.impact_attendu],
-        ){
-            Ok(row) =>{
-                let id: i32 = row.get("id");
-                Ok(format!("Projet ajouté avec l'ID: {}", id))
-            }
-            Err(err) => {
-                eprintln!("Erreur lors de l'ajout du projet: {:?}", err);
-                Err("Erreur lors de l'ajout du projet")
+        let row = client.query_one(
+            query_projet,
+            &[
+                &projet_data.nom,
+                &projet_data.code,
+                &projet_data.description,
+                &projet_data.annee_debut,
+                &projet_data.annee_fin,
+                &projet_data.impact_attendu,
+            ],
+        ).map_err(|err| {
+            eprintln!("Erreur lors de l'insertion du projet: {:?}", err);
+            "Erreur lors de l'insertion du projet"
+        })?;
+
+        let projet_id: i32 = row.get("id");
+
+        // 2. Insertion du statut si fourni
+        if let Some(statut) = projet_data.statut {
+            client.execute(
+                "INSERT INTO Statut(projet_id, statut_actuel) VALUES($1, $2)",
+                &[&projet_id, &statut],
+            ).ok();
+        }
+
+        // 3. Insertion du type si fourni
+        if let Some(type_projet) = projet_data.type_projet {
+            client.execute(
+                "INSERT INTO Type(projet_id, type) VALUES($1, $2)",
+                &[&projet_id, &type_projet],
+            ).ok();
+        }
+
+        // 4. Insertion de la priorité si fournie
+        if let Some(priorite) = projet_data.priorite {
+            client.execute(
+                "INSERT INTO Priorite(projet_id, description) VALUES($1, $2)",
+                &[&projet_id, &priorite],
+            ).ok();
+        }
+
+        // 5. Insertion des objectifs si fournis
+        if let Some(objectifs) = projet_data.objectifs {
+            client.execute(
+                "INSERT INTO Objectifs(projet_id, description) VALUES($1, $2)",
+                &[&projet_id, &objectifs],
+            ).ok();
+        }
+
+        // 6. Insertion des utilisateurs liés (table Projet_User)
+        if let Some(utilisateurs) = projet_data.utilisateurs {
+            for u in utilisateurs {
+                client.execute(
+                    "INSERT INTO Projet_User(projet_id, user_id, role) VALUES($1, $2, $3)
+                     ON CONFLICT (projet_id, user_id) DO NOTHING",
+                    &[&projet_id, &u.user_id, &u.role],
+                ).ok();
             }
         }
-    })
-    .await;
 
-    match result{
-        Ok(Ok(response)) =>HttpResponse::Ok().json(response),
-        Ok(Err(err))=> HttpResponse::InternalServerError().body(err),
-        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur")
+        Ok::<String, &str>(format!("Projet ajouté avec l'ID: {}", projet_id))
+    }).await;
+
+    match result {
+        Ok(Ok(response)) => HttpResponse::Ok().json(response),
+        Ok(Err(err)) => HttpResponse::InternalServerError().body(err.to_string()),
+        Err(_) => HttpResponse::InternalServerError().body("Erreur interne du serveur"),
     }
 }
 

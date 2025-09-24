@@ -1,18 +1,13 @@
-use crate::models::utilisateur::{self, Utilisateurs};
-use axum::http::response;
-use postgres::{Client, NoTls};
-use actix_web::{web, HttpResponse, Responder, Error};
-use actix_web::error::ErrorInternalServerError;
-use chrono::Utc;
+use crate::models::utilisateur::{Utilisateurs};
+use actix_web::{web, HttpResponse, Responder};
 use super::dbconnect::database_connexion;
 use serde_json::json;
-use sha2::{Sha256, Digest};
 
 
 
 /// Fonction pour ajouter un utilisateur
 pub async fn ajouter_utilisateur(form: web::Json<Utilisateurs>) -> impl Responder {
-    let mut user = form.into_inner();
+    let  user = form.into_inner();
 
     //let hash_password= Sha256::new().chain_update(hash_password).chain_update("String data").finalize();
 
