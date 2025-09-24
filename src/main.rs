@@ -13,6 +13,7 @@ async fn main() -> std::io::Result<()> {
             .route("/ajouter_utilisateur", web::post().to(api::utilisateur::ajouter_utilisateur))
             .route("/obtenir_utilisateur/{id}", web::get().to(api::utilisateur::recuperer_utilisateur))
             .route("ajouter_projet", web::post().to(api::projet::ajouter_projet))
+            .route("recuperer_projet/{id}", web::post().to(api::projet::recuperer_projet))
             .route("/supprimmer_projet", web::post().to(api::projet::supprimer_projet))
             .route("/ville_add", web::post().to(api::intermediary::ville_add))
     })

@@ -47,6 +47,13 @@ pub struct Ville{
     pub id: Option<i32>,
     pub nom: String,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct InfrastructureMobilisee{
+    pub id: Option<i32>,
+    pub nom: String,
+    pub date_mise_a_jour: Option<String>,
+}
 /* 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -55,12 +62,7 @@ pub struct ProjetVille{
     pub ville_id: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct InfrastructureMobilisee{
-    pub id: Option<i32>,
-    pub nom: String,
-    pub date_mise_a_jour: Option<String>,
-}
+
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProjetInfrastructure{
