@@ -1,4 +1,4 @@
-/*use postgres::{Client, NoTls, Error};
+use postgres::{Client, NoTls, Error};
 
 pub fn database_connexion() -> Result<Client, Error> {
     let client = Client::connect(
@@ -11,8 +11,9 @@ pub fn database_connexion() -> Result<Client, Error> {
 
     println!("Connexion à la base de données réussie");
     Ok(client)
-}*/
+}
 
+/* 
 use diesel::r2d2::{self, ConnectionManager};
 use diesel::PgConnection;
 
@@ -26,3 +27,4 @@ pub fn database_connexion() -> DbPool {
         .build(manager)
         .expect("Failed to create pool.")
 }
+*/

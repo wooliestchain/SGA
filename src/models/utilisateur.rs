@@ -1,4 +1,3 @@
-/*
 use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
 use super::projet;
@@ -22,8 +21,9 @@ pub struct UserRole{
     pub user_id: i32,
     pub role_id: i32
 }
-*/
 
+
+/* 
 use serde::{Serialize, Deserialize};
 use chrono::NaiveDateTime;
 use crate::schema::utilisateurs;
@@ -47,3 +47,4 @@ pub struct NewUtilisateur {
     pub password: String,
     pub date_creation: Option<NaiveDateTime>,
 }
+*/
